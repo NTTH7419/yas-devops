@@ -21,23 +21,20 @@ jobs:
   Build:
     runs-on: ubuntu-latest
     env:
-      # FROM_ORIGINAL_REPOSITORY: ${{ github.event.pull_request.head.repo.full_name == github.repository || github.ref == 'refs/heads/main' }}
-      FROM_ORIGINAL_REPOSITORY: true
+      FROM_ORIGINAL_REPOSITORY: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
       - uses: ./.github/workflows/actions
-      - name: Run Maven Build Command
-        run: mvn clean install -DskipTests -f {{SERVICE_NAME}}
-      - name: Run Maven Test
-        run: mvn verify -f {{SERVICE_NAME}}
+      - name: Run Maven Build and Test
+        run: mvn clean verify -f {{SERVICE_NAME}}
       - name: Unit Test Results
         uses: dorny/test-reporter@v1
         if: ${{ env.FROM_ORIGINAL_REPOSITORY == 'true' && (success() || failure()) }}
         with:
           name: Unit-Test-Results
-          path: "{{SERVICE_NAME}}/**/surefire-reports/*.xml"
+          path: "{{SERVICE_NAME}}/**/*-reports/TEST*.xml"
           reporter: java-junit
       - name: Add coverage report to PR
         uses: madrapps/jacoco-report@v1.6.1
