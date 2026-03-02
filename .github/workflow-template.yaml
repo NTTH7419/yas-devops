@@ -21,7 +21,8 @@ jobs:
   Build:
     runs-on: ubuntu-latest
     env:
-      FROM_ORIGINAL_REPOSITORY: ${{ github.event.pull_request.head.repo.full_name == github.repository || github.ref == 'refs/heads/main' }}
+      # FROM_ORIGINAL_REPOSITORY: ${{ github.event.pull_request.head.repo.full_name == github.repository || github.ref == 'refs/heads/main' }}
+      FROM_ORIGINAL_REPOSITORY: true
     steps:
       - uses: actions/checkout@v4
         with:
@@ -30,7 +31,7 @@ jobs:
       - name: Run Maven Build Command
         run: mvn clean install -DskipTests -f {{SERVICE_NAME}}
       - name: Run Maven Test
-        run: mvn test -f {{SERVICE_NAME}}
+        run: mvn verify -f {{SERVICE_NAME}}
       - name: Unit Test Results
         uses: dorny/test-reporter@v1
         if: ${{ env.FROM_ORIGINAL_REPOSITORY == 'true' && (success() || failure()) }}
@@ -38,6 +39,16 @@ jobs:
           name: Unit-Test-Results
           path: "{{SERVICE_NAME}}/**/surefire-reports/*.xml"
           reporter: java-junit
+      - name: Add coverage report to PR
+        uses: madrapps/jacoco-report@v1.6.1
+        if: ${{ env.FROM_ORIGINAL_REPOSITORY == 'true' }}
+        with:
+          paths: ${{github.workspace}}/{{SERVICE_NAME}}/target/site/jacoco/jacoco.xml
+          token: ${{secrets.GITHUB_TOKEN}}
+          min-coverage-overall: 80
+          min-coverage-changed-files: 60
+          title: '{{SERVICE_NAME}} Coverage Report'
+          update-comment: true
       - name: Analyze with sonar cloud
         if: ${{ env.FROM_ORIGINAL_REPOSITORY == 'true' }}
         env:
