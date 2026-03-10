@@ -27,6 +27,8 @@ jobs:
         with:
           fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
       - uses: ./.github/workflows/actions
+      - name: Configure sysctl for Elasticsearch
+        run: sudo sysctl -w vm.max_map_count=262144
       - name: Run Maven Build Command
         run: mvn clean install -pl search -am
       - name: Run Maven Checkstyle
