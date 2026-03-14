@@ -67,7 +67,7 @@ jobs:
       - name: Analyze with sonar cloud
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -f storefront-bff
+        run: mvn org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -pl storefront-bff -am
       # - name: Log in to the Container registry
       #   if: ${{ github.ref == 'refs/heads/main' }}
       #   uses: docker/login-action@v3
@@ -95,3 +95,4 @@ jobs:
       # - name: Push Docker image
       #   if: ${{ github.ref == 'refs/heads/main' }}
       #   run: docker push ghcr.io/nashtech-garage/yas-storefront-bff:latest
+
