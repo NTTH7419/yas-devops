@@ -88,4 +88,4 @@ jobs:
       #   run: docker push ghcr.io/nashtech-garage/yas-backoffice-bff:latest
 
       - name: Run Maven Verify
-        run: mvn clean verify -f backoffice-bff
+        run: mvn clean verify -pl backoffice-bff -am

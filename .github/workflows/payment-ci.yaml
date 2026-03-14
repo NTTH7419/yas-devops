@@ -27,11 +27,10 @@ jobs:
         with:
           fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
       - uses: ./.github/workflows/actions
-      - name: Install dependencies and Run Test
-        # -pl payment -am: Chỉ định build 'payment' và 'also-make' các phụ thuộc của nó
-        run: mvn clean install -DskipTests -pl payment-paypal,payment -am
+      - name: Install payment-paypal
+        run: mvn install -DskipTests -pl payment-paypal -am
       - name: Run Maven Test Command
-        run: mvn test -pl payment
+        run: mvn test -pl payment -am
       - name: Run Maven Checkstyle
         run: mvn checkstyle:checkstyle -pl payment -am -Dcheckstyle.output.file=payment-checkstyle-result.xml
       - name: Upload Checkstyle Result
@@ -65,6 +64,8 @@ jobs:
         with:
           fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
       - uses: ./.github/workflows/actions
+      - name: Install payment-paypal
+        run: mvn install -DskipTests -pl payment-paypal -am
       - name: Run Maven Build Command
         run: mvn clean package -DskipTests -pl payment -am
       - name: Snyk - Dependency Scan
