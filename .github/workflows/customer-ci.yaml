@@ -48,6 +48,7 @@ jobs:
           --org=${{ vars.SNYK_ORG }}
           --project-name="yas/customer-service" 
           --severity-threshold=high
+          -d
       - name: Analyze with SonarCloud
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
