@@ -1,7 +1,7 @@
 #!/bin/bash
 
 WORKFLOW_TEMPLATE=$(cat .github/workflow-template.yaml)
-SERVICES=(product pricing media storefront backoffice-bff)
+SERVICES=(product pricing media backoffice-bff storefront-bff)
 
 for SERVICE_NAME in "${SERVICES[@]}"; do
     echo "Generating workflow for ${SERVICE_NAME} service"
