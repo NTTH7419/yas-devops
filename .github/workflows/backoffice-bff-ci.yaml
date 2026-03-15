@@ -36,8 +36,9 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         run: >
           snyk test 
-          --org=ntth7419  
-          --maven-aggregate-project
+          --file=backoffice-bff/pom.xml 
+          --org=ntth7419 
+          --project-name="yas/backoffice-bff-service" 
           --severity-threshold=high
       - name: Analyze with SonarCloud
         env:

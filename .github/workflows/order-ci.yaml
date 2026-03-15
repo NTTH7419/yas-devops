@@ -42,8 +42,9 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         run: >
           snyk test 
-          --org=ntth7419  
-          --maven-aggregate-project
+          --file=order/pom.xml 
+          --org=ntth7419 
+          --project-name="yas/order-service" 
           --severity-threshold=high
       - name: Analyze with SonarCloud
         env:
