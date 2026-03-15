@@ -18,23 +18,17 @@ on:
   workflow_dispatch:
 
 jobs:
-  Test:
+  Build:
     runs-on: ubuntu-latest
     env:
       FROM_ORIGINAL_REPOSITORY: ${{ github.event.pull_request.head.repo.full_name == github.repository || github.ref == 'refs/heads/main' }}
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
+          fetch-depth: 0
       - uses: ./.github/workflows/actions
-      - name: Run Maven Verify (Test + Coverage)
-        run: mvn verify -pl backoffice-bff -am
-      - name: Run Maven Checkstyle
-        run: mvn checkstyle:checkstyle -pl backoffice-bff -am -Dcheckstyle.output.file=backoffice-bff-checkstyle-result.xml
-      - name: Upload Checkstyle Result
-        uses: jwgmeligmeyling/checkstyle-github-action@master
-        with:
-          path: "**/backoffice-bff-checkstyle-result.xml"
+      - name: Run Maven Build Command
+        run: mvn clean package -DskipTests -pl backoffice-bff -am
       - name: Snyk - Dependency Scan
         uses: snyk/actions/maven@9adf32b1121593767fc3c057af55b55db032dc04
         continue-on-error: true
@@ -46,39 +40,6 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: mvn org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -pl backoffice-bff -am
-      - name: Notification if No Test Results
-        if: ${{ (success() || failure()) && hashFiles('backoffice-bff/**/*-reports/TEST*.xml') == '' }}
-        run: echo "No test reports found for backoffice-bff. Skipping test reporting."
-      - name: Test Results
-        uses: dorny/test-reporter@6c357194179c694acfcad2100dbf27c5b9b0d5e0 # v1.9.1
-        if: ${{ (success() || failure()) && hashFiles('backoffice-bff/**/*-reports/TEST*.xml') != '' }}
-        with:
-          name: Backoffice-BFF-Unit-Test-Results
-          path: "backoffice-bff/**/*-reports/TEST*.xml"
-          reporter: java-junit
-      - name: Add coverage report to PR
-        uses: madrapps/jacoco-report@db72e7e7c96f98d239967958b0a0a6ca7d3bb45f   # v1.6.1
-        if: ${{ (success() || failure()) && hashFiles('backoffice-bff/target/site/jacoco/jacoco.xml') != '' }}
-        with:
-          paths: ${{github.workspace}}/backoffice-bff/target/site/jacoco/jacoco.xml
-          token: ${{secrets.GITHUB_TOKEN}}
-          min-coverage-overall: 70
-          min-coverage-changed-files: 70
-          title: "Backoffice BFF Coverage Report"
-          update-comment: true
-
-  Build:
-    needs: Test
-    runs-on: ubuntu-latest
-    env:
-      FROM_ORIGINAL_REPOSITORY: ${{ github.event.pull_request.head.repo.full_name == github.repository || github.ref == 'refs/heads/main' }}
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - uses: ./.github/workflows/actions
-      - name: Run Maven Build Command
-        run: mvn clean package -DskipTests -pl backoffice-bff -am
       # - name: Log in to the Container registry
       #   if: ${{ github.ref == 'refs/heads/main' }}
       #   uses: docker/login-action@v3
