@@ -37,13 +37,15 @@ jobs:
           path: "**/customer-checkstyle-result.xml"
       - name: Install Snyk CLI
         run: npm install -g snyk
+      - name: Build project
+        run: mvn -B install -DskipTests
       - name: Snyk - Dependency Scan
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         run: >
           snyk test 
           --file=customer/pom.xml 
-          --org=ntth7419 
+          --org=${{ vars.SNYK_ORG }}
           --project-name="yas/customer-service" 
           --severity-threshold=high
       - name: Analyze with SonarCloud
@@ -104,7 +106,7 @@ jobs:
       #   run: >
       #     snyk container test ghcr.io/nashtech-garage/yas-customer:latest 
       #     --file=customer/Dockerfile 
-      #     --org=ntth7419 
+      #     --org=${{ vars.SNYK_ORG }}
       #     --project-name="yas/customer-container" 
       #     --severity-threshold=high
       # - name: Push Docker image
