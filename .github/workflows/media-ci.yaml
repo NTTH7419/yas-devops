@@ -44,7 +44,7 @@ jobs:
       - name: Analyze with SonarCloud
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -pl media -am
+        run: mvn org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -pl media -am -Dsonar.qualitygate.wait=true
       - name: Test Results
         uses: dorny/test-reporter@31a54ee7ebcacc03a09ea97a7e5465a47b84aea5
         if: ${{ success() || failure() }}
