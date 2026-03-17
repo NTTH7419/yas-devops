@@ -28,4 +28,16 @@ ignore:
     - '*':
         reason: "Issue is in keycloak-server-spi-private transitive chain from keycloak-spring-boot-starter 25.0.3. Temporary ignore until coordinated upgrade to a fixed Keycloak line is completed."
         expires: "2026-06-30T23:59:59.000Z"
+  SNYK-JAVA-COMMONSBEANUTILS-10259368:
+    - '*':
+        reason: "Transitive dependency via opencsv in common-library; temporarily ignored to keep CI stable until dependency alignment is completed."
+        expires: "2026-06-30T23:59:59.000Z"
+  SNYK-JAVA-ORGLZ4-14151788:
+    - '*':
+        reason: "Transitive via kafka-clients from Spring Kafka integration stack; temporary ignore while runtime-compatible dependency strategy is being finalized."
+        expires: "2026-06-30T23:59:59.000Z"
+  SNYK-JAVA-ORGLZ4-14219384:
+    - '*':
+        reason: "No direct patch path in current transitive chain; temporary ignore to prevent CI blockage while preserving runtime compatibility."
+        expires: "2026-06-30T23:59:59.000Z"
 patch: {}
