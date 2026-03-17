@@ -8,6 +8,7 @@ on:
       - ".github/workflows/actions/action.yaml"
       - ".github/workflows/location-ci.yaml"
       - "pom.xml"
+      - ".snyk"
   pull_request:
     branches: ["**"]
     paths:
@@ -15,6 +16,7 @@ on:
       - ".github/workflows/actions/action.yaml"
       - ".github/workflows/location-ci.yaml"
       - "pom.xml"
+      - ".snyk"
   workflow_dispatch:
 
 jobs:
