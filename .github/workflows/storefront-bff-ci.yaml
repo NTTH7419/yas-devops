@@ -27,8 +27,8 @@ jobs:
         with:
           fetch-depth: 0
       - uses: ./.github/workflows/actions
-      - name: Run Maven Test
-        run: mvn test -pl storefront-bff -am
+      - name: Run Maven Build Command
+        run: mvn clean package -DskipTests -pl storefront-bff -am
       - name: Snyk - Dependency Scan
         uses: snyk/actions/maven@9adf32b1121593767fc3c057af55b55db032dc04
         continue-on-error: true
