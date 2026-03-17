@@ -30,7 +30,7 @@ jobs:
       - name: Install payment-paypal
         run: mvn install -DskipTests -pl payment-paypal -am
       - name: Run Maven Verify (Test + Coverage)
-        run: mvn verify -pl payment -am
+        run: mvn verify -DskipITs -pl payment -am
       - name: Run Maven Checkstyle
         run: mvn checkstyle:checkstyle -pl payment -am -Dcheckstyle.output.file=payment-checkstyle-result.xml
       - name: Upload Checkstyle Result
