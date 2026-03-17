@@ -45,6 +45,7 @@ jobs:
           --maven-aggregate-project
           --org=${{ vars.SNYK_ORG }}
           --severity-threshold=high
+          -d
       - name: Analyze with SonarCloud
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
