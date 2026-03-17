@@ -43,8 +43,6 @@ jobs:
         run: >
           snyk test
           --maven-aggregate-project
-          --severity-threshold=high
-          --json-file-output=output.json
       - name: Analyze with SonarCloud
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
