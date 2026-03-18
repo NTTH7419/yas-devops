@@ -35,6 +35,15 @@ jobs:
         working-directory: backoffice
       - run: npx prettier --check .
         working-directory: backoffice
+      - name: Snyk - Dependency Scan
+        run: >
+          npx snyk test 
+          --file=backoffice/package.json
+          --org=${{ vars.SNYK_ORG }}
+          --severity-threshold=high
+          --policy-path=.snyk
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       - name: SonarCloud Scan
         uses: SonarSource/sonarqube-scan-action@v5
         with:
