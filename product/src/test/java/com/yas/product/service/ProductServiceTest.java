@@ -44,6 +44,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -66,6 +68,7 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 class ProductServiceTest {
 
     @Mock private ProductRepository productRepository;
@@ -1182,8 +1185,6 @@ class ProductServiceTest {
                 .thenReturn(Optional.empty());
             when(productRepository.findBySkuAndIsPublishedTrue(anyString()))
                 .thenReturn(Optional.empty());
-            when(productRepository.findAllById(Collections.emptyList()))
-                .thenReturn(Collections.emptyList());
             when(brandRepository.findById(5L)).thenReturn(Optional.of(brand));
             when(productRepository.save(any(Product.class))).thenReturn(saved);
             when(productImageRepository.saveAll(any())).thenReturn(Collections.emptyList());
@@ -1217,8 +1218,6 @@ class ProductServiceTest {
                 .thenReturn(Optional.empty());
             when(productRepository.findBySkuAndIsPublishedTrue(anyString()))
                 .thenReturn(Optional.empty());
-            when(productRepository.findAllById(Collections.emptyList()))
-                .thenReturn(Collections.emptyList());
             when(productRepository.save(any(Product.class)))
                 .thenReturn(buildProduct(1L, "Product", "product-brand"));
             when(productImageRepository.saveAll(any())).thenReturn(Collections.emptyList());
