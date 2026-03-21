@@ -66,6 +66,7 @@ jobs:
           min-coverage-changed-files: 70
           title: "Promotion Coverage Report"
           update-comment: true
+          fail-when-below-threshold: true
 
   Build:
     needs: Test

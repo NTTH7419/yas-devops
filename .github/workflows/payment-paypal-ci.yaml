@@ -70,6 +70,7 @@ jobs:
           min-coverage-changed-files: 70
           title: "payment-paypal Coverage Report"
           update-comment: true
+          fail-when-below-threshold: true
 
   Build:
     needs: Test
