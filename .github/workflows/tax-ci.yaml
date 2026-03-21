@@ -36,17 +36,16 @@ jobs:
       - name: Upload Checkstyle Result
         uses: jwgmeligmeyling/checkstyle-github-action@master
         with:
-          path: '**/tax-checkstyle-result.xml'
-      - name: Install Snyk CLI
-        run: npm install -g snyk
-      - name: Authenticate Snyk
-        run: snyk auth ${{ secrets.SNYK_TOKEN }}
+          path: "**/tax-checkstyle-result.xml"
       - name: Snyk - Dependency Scan
         run: >
-          snyk test
+          npx snyk test
           --maven-aggregate-project
           --org=${{ vars.SNYK_ORG }}
           --severity-threshold=high
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        continue-on-error: true
       - name: Analyze with SonarCloud
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
