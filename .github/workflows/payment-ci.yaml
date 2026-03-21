@@ -67,6 +67,7 @@ jobs:
           min-coverage-changed-files: 70
           title: "Payment Coverage Report"
           update-comment: true
+          fail-on-coverage-change: true
 
   Build:
     needs: Test
