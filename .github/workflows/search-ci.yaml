@@ -22,6 +22,9 @@ on:
 jobs:
   Test:
     runs-on: ubuntu-22.04
+    permissions:
+      checks: write
+      pull-requests: write
     env:
       FROM_ORIGINAL_REPOSITORY: ${{ github.event.pull_request.head.repo.full_name == github.repository || github.ref == 'refs/heads/main' }}
     steps:
@@ -66,6 +69,7 @@ jobs:
           min-coverage-changed-files: 70
           title: "Search Coverage Report"
           update-comment: true
+          fail: true
 
   Build:
     needs: Test
