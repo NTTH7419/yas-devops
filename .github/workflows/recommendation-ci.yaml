@@ -60,16 +60,35 @@ jobs:
           name: Recommendation-Service-Unit-Test-Results
           path: "recommendation/**/*-reports/TEST*.xml"
           reporter: java-junit
-      - name: Add coverage report to PR
-        uses: madrapps/jacoco-report@v1.6.1
-        with:
-          paths: ${{github.workspace}}/recommendation/target/site/jacoco/jacoco.xml
-          token: ${{secrets.GITHUB_TOKEN}}
-          min-coverage-overall: 70
-          min-coverage-changed-files: 70
-          title: "Recommendation Coverage Report"
-          update-comment: true
-          fail: true
+      - name: Check Coverage
+        id: coverage
+        run: |
+          set -e
+          JACOCO_FILE="${{ github.workspace }}/recommendation/target/site/jacoco/jacoco.xml"
+          if [ ! -f "$JACOCO_FILE" ]; then
+            echo "::error::JaCoCo report not found at $JACOCO_FILE"
+            exit 1
+          fi
+          COVERAGE=$(grep -oP '(?<=line coverage=")[^"]+' "$JACOCO_FILE" | head -1)
+          COVERAGE_PCT=$(echo "$COVERAGE * 100" | bc | awk '{printf "%.1f", $0}')
+          echo "Line coverage: ${COVERAGE_PCT}%"
+          echo "coverage_pct=${COVERAGE_PCT}" >> "$GITHUB_OUTPUT"
+          if (( $(echo "$COVERAGE < 0.7" | bc -l) )); then
+            echo "::error::Code coverage ${COVERAGE_PCT}% is below the required 70%"
+            exit 1
+          fi
+          echo "✓ Coverage ${COVERAGE_PCT}% meets the 70% threshold"
+      - name: Post coverage comment to PR
+        if: github.event_name == 'pull_request'
+        run: |
+          COVERAGE_PCT="${{ steps.coverage.outputs.coverage_pct }}"
+          PR_NUMBER="${{ github.event.pull_request.number }}"
+          BODY="## 📊 Coverage Report%n%n**Recommendation Service coverage: ${COVERAGE_PCT}%** (required: 70%)"
+          curl -s -o /dev/null -w "%{http_code}" \
+            -X POST "https://api.github.com/repos/${{ github.repository }}/issues/$PR_NUMBER/comments" \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -d "{\"body\": \"$(echo -e "$BODY")\"}"
 
   Build:
     needs: Test
