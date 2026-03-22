@@ -41,16 +41,10 @@ jobs:
           --sarif-file-output=snyk.sarif
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-      - name: Debug - Display Snyk SARIF file content
-        run: cat snyk.sarif
       - name: Split SARIF
         run: |
           jq '.runs |= .[:20]' snyk.sarif > snyk-part1.sarif
           jq '.runs |= .[20:]' snyk.sarif > snyk-part2.sarif
-      - name: Debug - Display Snyk SARIF part 1 content
-        run: cat snyk-part1.sarif
-      - name: Debug - Display Snyk SARIF part 2 content
-        run: cat snyk-part2.sarif
       - name: Upload SARIF part 1
         uses: github/codeql-action/upload-sarif@v4
         with:
